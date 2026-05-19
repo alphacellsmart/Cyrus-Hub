@@ -34,12 +34,35 @@ pcall(function() if CoreGui:FindFirstChild("CyrusHub") then CoreGui.CyrusHub:Des
 --// =========================================
 --//   DETECÇÃO DE IDIOMA
 --// =========================================
-local _isBR = false
+local _locale = "en"
 pcall(function()
-    local locale = game:GetService("LocalizationService").RobloxLocaleId or ""
-    _isBR = (locale == "pt-BR" or locale == "pt_BR" or locale:sub(1,2) == "pt")
+    local l = game:GetService("LocalizationService").RobloxLocaleId or ""
+    l = l:lower()
+    if l:sub(1,2)=="pt" then _locale="pt"
+    elseif l:sub(1,2)=="ru" then _locale="ru"
+    elseif l:sub(1,2)=="es" then _locale="es"
+    elseif l:sub(1,2)=="vi" then _locale="vi"
+    elseif l:sub(1,2)=="th" then _locale="th"
+    elseif l:sub(1,2)=="tr" then _locale="tr"
+    elseif l:sub(1,2)=="ar" then _locale="ar"
+    elseif l:sub(1,2)=="fr" then _locale="fr"
+    elseif l:sub(1,2)=="de" then _locale="de"
+    elseif l:sub(1,2)=="id" then _locale="id"
+    elseif l:sub(1,2)=="ko" then _locale="ko"
+    elseif l:sub(1,2)=="ja" then _locale="ja"
+    elseif l:sub(1,2)=="zh" then _locale="zh"
+    elseif l:sub(1,2)=="pl" then _locale="pl"
+    end
 end)
-local function T(pt, en) return _isBR and pt or en end
+local _isBR = (_locale == "pt")
+local function T(pt, en, ru, es, vi, th)
+    if _locale=="pt" then return pt
+    elseif _locale=="ru" then return ru or en
+    elseif _locale=="es" then return es or en
+    elseif _locale=="vi" then return vi or en
+    elseif _locale=="th" then return th or en
+    else return en end
+end
 
 --// =========================================
 --//   FETCH JSON
@@ -132,14 +155,14 @@ local Theme = {
     gold      = Color3.fromRGB(255,200,60),
 }
 local THEMES = {
-    {name=T("Roxo","Purple"),  accent=Color3.fromRGB(120,0,240), accentLit=Color3.fromRGB(160,0,255)},
-    {name=T("Azul","Blue"),    accent=Color3.fromRGB(0,100,255), accentLit=Color3.fromRGB(0,160,255)},
-    {name=T("Verde","Green"),  accent=Color3.fromRGB(0,180,80),  accentLit=Color3.fromRGB(0,220,100)},
-    {name=T("Laranja","Orange"),accent=Color3.fromRGB(220,100,0),accentLit=Color3.fromRGB(255,140,0)},
-    {name=T("Rosa","Pink"),    accent=Color3.fromRGB(200,0,120), accentLit=Color3.fromRGB(255,0,160)},
-    {name=T("Ciano","Cyan"),   accent=Color3.fromRGB(0,180,200), accentLit=Color3.fromRGB(0,220,240)},
-    {name=T("Vermelho","Red"), accent=Color3.fromRGB(210,30,30), accentLit=Color3.fromRGB(255,60,60)},
-    {name=T("Dourado","Gold"), accent=Color3.fromRGB(200,150,0), accentLit=Color3.fromRGB(240,190,30)},
+    {name=T("Roxo","Purple","Фиолетовый","Morado","Tim","สีม่วง"),  accent=Color3.fromRGB(120,0,240), accentLit=Color3.fromRGB(160,0,255)},
+    {name=T("Azul","Blue","Синий","Azul","Xanh","สีน้ำเงิน"),       accent=Color3.fromRGB(0,100,255), accentLit=Color3.fromRGB(0,160,255)},
+    {name=T("Verde","Green","Зелёный","Verde","Xanh la","สีเขียว"),  accent=Color3.fromRGB(0,180,80),  accentLit=Color3.fromRGB(0,220,100)},
+    {name=T("Laranja","Orange","Оранжевый","Naranja","Cam","สีส้ม"), accent=Color3.fromRGB(220,100,0), accentLit=Color3.fromRGB(255,140,0)},
+    {name=T("Rosa","Pink","Розовый","Rosa","Hong","สีชมพู"),          accent=Color3.fromRGB(200,0,120), accentLit=Color3.fromRGB(255,0,160)},
+    {name=T("Ciano","Cyan","Голубой","Cian","Xanh nhat","สีฟ้า"),    accent=Color3.fromRGB(0,180,200), accentLit=Color3.fromRGB(0,220,240)},
+    {name=T("Vermelho","Red","Красный","Rojo","Do","สีแดง"),          accent=Color3.fromRGB(210,30,30), accentLit=Color3.fromRGB(255,60,60)},
+    {name=T("Dourado","Gold","Золотой","Dorado","Vang","สีทอง"),      accent=Color3.fromRGB(200,150,0), accentLit=Color3.fromRGB(240,190,30)},
 }
 
 --// =========================================
@@ -437,7 +460,7 @@ titleL.TextColor3=Color3.fromRGB(255,255,255); titleL.TextXAlignment=Enum.TextXA
 local subL=Instance.new("TextLabel",header); subL.Size=UDim2.new(1,-120,0,14); subL.Position=UDim2.new(0,46,0,28)
 subL.BackgroundTransparency=1; subL.Text=T("Bem-vindo, ","Welcome, ")..plr.Name; subL.Font=Enum.Font.Gotham; subL.TextSize=10
 subL.TextColor3=Theme.textDim; subL.TextXAlignment=Enum.TextXAlignment.Left; subL.ZIndex=12
-local closeBtn=mkBtn(header,UDim2.new(0,28,0,28),UDim2.new(1,-36,0.5,-14),Theme.bg3,"✕",12,8)
+local closeBtn=mkBtn(header,UDim2.new(0,28,0,28),UDim2.new(1,-36,0.5,-14),Theme.bg3,"X",12,8)
 closeBtn.TextColor3=Theme.textDim; closeBtn.TextSize=14
 
 -- Tab bar
@@ -738,28 +761,7 @@ end
 --//   ABA: SCRIPTS
 --// =========================================
 local function makeScripts()
-    mkSection(T("  EXECUTOR","  EXECUTOR"))
-    local execCard=mkCard(110)
-    local execLbl=Instance.new("TextLabel",execCard); execLbl.Size=UDim2.new(1,-16,0,16); execLbl.Position=UDim2.new(0,10,0,6)
-    execLbl.BackgroundTransparency=1; execLbl.Text=T("Cole seu loadstring() e clique Executar:","Paste loadstring() and click Run:"); execLbl.Font=Enum.Font.Gotham; execLbl.TextSize=10; execLbl.TextColor3=Theme.textDim; execLbl.TextXAlignment=Enum.TextXAlignment.Left; execLbl.ZIndex=13
-    local execBox=Instance.new("TextBox",execCard); execBox.Size=UDim2.new(1,-16,0,50); execBox.Position=UDim2.new(0,8,0,24)
-    execBox.BackgroundColor3=Theme.bg3; execBox.BorderSizePixel=0; execBox.Text=""
-    execBox.PlaceholderText='loadstring(game:HttpGet("https://..."))()'; execBox.PlaceholderColor3=Theme.textDim
-    execBox.Font=Enum.Font.Code; execBox.TextSize=10; execBox.TextColor3=Color3.fromRGB(255,255,255)
-    execBox.TextXAlignment=Enum.TextXAlignment.Left; execBox.ClearTextOnFocus=false; execBox.MultiLine=true; execBox.ZIndex=13
-    corner(execBox,6); mkStroke(execBox,Theme.accent,1)
-    local runBtn=mkBtn(execCard,UDim2.new(1,-16,0,26),UDim2.new(0,8,0,80),Theme.accent,T("▶ Executar","▶ Run"),13,8); runBtn.TextSize=12
-    runBtn.MouseButton1Click:Connect(function()
-        local code=execBox.Text:match("^%s*(.-)%s*$")
-        if code=="" then notify(T("⚠ Nenhum script.","⚠ No script.")); return end
-        local ok,err=pcall(loadstring,code)
-        if ok and err then pcall(err); notify(T("✓ Executado!","✓ Executed!"))
-        else notify(T("✗ Erro: ","✗ Error: ")..tostring(err):sub(1,60)) end
-    end)
-    runBtn.MouseEnter:Connect(function() tw(runBtn,0.15,{BackgroundColor3=Theme.accentLit}) end)
-    runBtn.MouseLeave:Connect(function() tw(runBtn,0.15,{BackgroundColor3=Theme.accent}) end)
-
-    mkSection(T("  MEUS SCRIPTS","  MY SCRIPTS"))
+    mkSection(T("  MEUS SCRIPTS","  MY SCRIPTS","  МОИ СКРИПТЫ","  MIS SCRIPTS","  SCRIPTS CUA TOI","  สคริปต์ของฉัน"))
     for _,sc in ipairs(MY_SCRIPTS) do
         mkActionRow(sc.name, sc.desc or "", T("▶ Run","▶ Run"), function()
             local ok,err=pcall(function() loadstring(game:HttpGet(sc.url))() end)
@@ -957,12 +959,12 @@ end
 --//   SISTEMA DE TABS
 --// =========================================
 local TABS={
-    {id="Dashboard", icon="⊞", label=T("Início","Home")},
-    {id="Scripts",   icon="⚡", label="Scripts"},
-    {id="Cyrus",     icon="◈",  label="Cyrus"},
-    {id="Premium",   icon="◆",  label="Premium"},
-    {id="Config",    icon="⚙",  label=T("Config","Config")},
-    {id="Contato",   icon="◉",  label=T("Contato","Contact")},
+    {id="Dashboard", icon="", label=T("Inicio","Home","Главная","Inicio","Trang chu","หน้าหลัก")},
+    {id="Scripts",   icon="", label="Scripts"},
+    {id="Cyrus",     icon="", label="Cyrus"},
+    {id="Premium",   icon="", label="Premium"},
+    {id="Config",    icon="", label=T("Config","Config","Настройки","Config","Cai dat","ตั้งค่า")},
+    {id="Contato",   icon="", label=T("Contato","Contact","Контакты","Contacto","Lien he","ติดต่อ")},
 }
 
 local function loadTab(cat)
