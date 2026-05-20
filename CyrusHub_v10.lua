@@ -442,7 +442,7 @@ loadPct.TextColor3=Theme.textDim; loadPct.ZIndex=108
 --// =========================================
 --//   HUB PRINCIPAL (invisível até animação terminar)
 --// =========================================
-local HUB_W,HUB_H=440,500
+local HUB_W,HUB_H=360,460
 local hub=mkFrame(sg,UDim2.new(0,HUB_W,0,HUB_H),UDim2.new(0.5,-HUB_W/2,0.5,-HUB_H/2),Theme.bg,10,14)
 hub.BackgroundTransparency=1; hub.Visible=false; mkStroke(hub,Theme.accent,1.5)
 local hubGlow=mkFrame(sg,UDim2.new(0,HUB_W+40,0,HUB_H+40),UDim2.new(0.5,-(HUB_W+40)/2,0.5,-(HUB_H+40)/2),Color3.fromRGB(80,0,180),9,20)
@@ -841,7 +841,7 @@ local function makeConfig()
         local lbl=Instance.new("TextLabel",row); lbl.Size=UDim2.new(1,-120,0,22); lbl.Position=UDim2.new(0,46,0.5,-11)
         lbl.BackgroundTransparency=1; lbl.Text=t.name; lbl.Font=Enum.Font.GothamBold; lbl.TextSize=12; lbl.TextColor3=Color3.fromRGB(255,255,255); lbl.TextXAlignment=Enum.TextXAlignment.Left; lbl.ZIndex=13
         local applyBtn=mkBtn(row,UDim2.new(0,72,0,26),UDim2.new(1,-80,0.5,-13),Theme.bg3,T("● Aplicar","● Apply"),13,7)
-        applyBtn.TextColor3=t.accent; applyBtn.TextSize=10; mkStroke(applyBtn,t.accent,1)
+        applyBtn.TextColor3=Color3.fromRGB(255,255,255); applyBtn.TextSize=10; mkStroke(applyBtn,t.accent,1)
         applyBtn.MouseButton1Click:Connect(function()
             Theme.accent=t.accent; Theme.accentLit=t.accentLit; Theme.accentGlow=t.accentLit
             mkStroke(hub,Theme.accent,1.5); sep.BackgroundColor3=Theme.accent
@@ -979,8 +979,8 @@ local function loadTab(cat)
 end
 
 local function makeTab(info)
-    local t=mkBtn(tabBar,UDim2.new(0,68,1,0),UDim2.new(0,0,0,0),Theme.bg3,info.icon.."  "..info.label,12,8)
-    t.Font=Enum.Font.GothamMedium; t.TextSize=9; t.TextColor3=Theme.textDim; t.AutoButtonColor=false
+    local t=mkBtn(tabBar,UDim2.new(0,56,1,0),UDim2.new(0,0,0,0),Theme.bg3,info.icon.."  "..info.label,12,8)
+    t.Font=Enum.Font.GothamMedium; t.TextSize=8; t.TextColor3=Theme.textDim; t.AutoButtonColor=false
     t.MouseButton1Click:Connect(function()
         if activeTab and activeTab~=t then tw(activeTab,0.15,{BackgroundColor3=Theme.bg3}); activeTab.TextColor3=Theme.textDim end
         activeTab=t; tw(t,0.15,{BackgroundColor3=Theme.accent}); t.TextColor3=Theme.text; loadTab(info.id)
