@@ -442,14 +442,14 @@ loadPct.TextColor3=Theme.textDim; loadPct.ZIndex=108
 --// =========================================
 --//   HUB PRINCIPAL (invisível até animação terminar)
 --// =========================================
-local HUB_W,HUB_H=360,460
+local HUB_W,HUB_H=310,440
 local hub=mkFrame(sg,UDim2.new(0,HUB_W,0,HUB_H),UDim2.new(0.5,-HUB_W/2,0.5,-HUB_H/2),Theme.bg,10,14)
 hub.BackgroundTransparency=1; hub.Visible=false; mkStroke(hub,Theme.accent,1.5)
 local hubGlow=mkFrame(sg,UDim2.new(0,HUB_W+40,0,HUB_H+40),UDim2.new(0.5,-(HUB_W+40)/2,0.5,-(HUB_H+40)/2),Color3.fromRGB(80,0,180),9,20)
 hubGlow.BackgroundTransparency=1; hubGlow.Visible=false; draggable(hub)
 
 -- Header
-local header=mkFrame(hub,UDim2.new(1,0,0,46),UDim2.new(0,0,0,0),Theme.bg2,11,14)
+local header=mkFrame(hub,UDim2.new(1,0,0,40),UDim2.new(0,0,0,0),Theme.bg2,11,14)
 local headerAccent=mkFrame(header,UDim2.new(1,0,0,2),UDim2.new(0,0,1,-2),Theme.accent,12)
 headerAccent.BackgroundTransparency=0.5
 local iconF=mkFrame(header,UDim2.new(0,28,0,28),UDim2.new(0,10,0.5,-14),Theme.accent,12,8)
@@ -464,13 +464,13 @@ local closeBtn=mkBtn(header,UDim2.new(0,28,0,28),UDim2.new(1,-36,0.5,-14),Theme.
 closeBtn.TextColor3=Theme.textDim; closeBtn.TextSize=14
 
 -- Tab bar
-local tabBar=mkFrame(hub,UDim2.new(1,-16,0,34),UDim2.new(0,8,0,52),Theme.bg3,11,8)
+local tabBar=mkFrame(hub,UDim2.new(1,-12,0,30),UDim2.new(0,6,0,46),Theme.bg3,11,8)
 local tl=Instance.new("UIListLayout",tabBar); tl.FillDirection=Enum.FillDirection.Horizontal; tl.Padding=UDim.new(0,3)
-local sep=mkFrame(hub,UDim2.new(1,-16,0,1),UDim2.new(0,8,0,92),Theme.accent,11); sep.BackgroundTransparency=0.8
+local sep=mkFrame(hub,UDim2.new(1,-12,0,1),UDim2.new(0,6,0,82),Theme.accent,11); sep.BackgroundTransparency=0.8
 
 -- Content
 local content=Instance.new("ScrollingFrame",hub)
-content.Size=UDim2.new(1,-16,1,-108); content.Position=UDim2.new(0,8,0,96)
+content.Size=UDim2.new(1,-12,1,-96); content.Position=UDim2.new(0,6,0,88)
 content.BackgroundTransparency=1; content.BorderSizePixel=0; content.ScrollBarThickness=3
 content.ScrollBarImageColor3=Theme.accent; content.ZIndex=11; content.ClipsDescendants=true
 local cLayout=Instance.new("UIListLayout",content); cLayout.Padding=UDim.new(0,5)
@@ -676,7 +676,7 @@ end) end
 --// =========================================
 local activeTab=nil; local currentCat="Dashboard"
 local function clearContent() for _,c in ipairs(content:GetChildren()) do if not(c:IsA("UIListLayout") or c:IsA("UIPadding")) then c:Destroy() end end end
-local function mkCard(h,col) return mkFrame(content,UDim2.new(1,-2,0,h),UDim2.new(0,1,0,0),col or Theme.bg2,12,10) end
+local function mkCard(h,col) return mkFrame(content,UDim2.new(1,-2,0,h-6),UDim2.new(0,1,0,0),col or Theme.bg2,12,8) end
 
 local function mkSection(txt)
     local row=mkFrame(content,UDim2.new(1,-2,0,20),UDim2.new(0,1,0,0),Color3.fromRGB(0,0,0),12); row.BackgroundTransparency=1
@@ -979,8 +979,8 @@ local function loadTab(cat)
 end
 
 local function makeTab(info)
-    local t=mkBtn(tabBar,UDim2.new(0,56,1,0),UDim2.new(0,0,0,0),Theme.bg3,info.icon.."  "..info.label,12,8)
-    t.Font=Enum.Font.GothamMedium; t.TextSize=8; t.TextColor3=Theme.textDim; t.AutoButtonColor=false
+    local t=mkBtn(tabBar,UDim2.new(0,46,1,0),UDim2.new(0,0,0,0),Theme.bg3,info.icon.."  "..info.label,12,8)
+    t.Font=Enum.Font.GothamMedium; t.TextSize=7; t.TextColor3=Theme.textDim; t.AutoButtonColor=false
     t.MouseButton1Click:Connect(function()
         if activeTab and activeTab~=t then tw(activeTab,0.15,{BackgroundColor3=Theme.bg3}); activeTab.TextColor3=Theme.textDim end
         activeTab=t; tw(t,0.15,{BackgroundColor3=Theme.accent}); t.TextColor3=Theme.text; loadTab(info.id)
