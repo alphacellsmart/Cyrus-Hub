@@ -442,7 +442,7 @@ loadPct.TextColor3=Theme.textDim; loadPct.ZIndex=108
 --// =========================================
 --//   HUB PRINCIPAL (invisível até animação terminar)
 --// =========================================
-local HUB_W,HUB_H=310,440
+local HUB_W,HUB_H=420,360
 local hub=mkFrame(sg,UDim2.new(0,HUB_W,0,HUB_H),UDim2.new(0.5,-HUB_W/2,0.5,-HUB_H/2),Theme.bg,10,14)
 hub.BackgroundTransparency=1; hub.Visible=false; mkStroke(hub,Theme.accent,1.5)
 local hubGlow=mkFrame(sg,UDim2.new(0,HUB_W+40,0,HUB_H+40),UDim2.new(0.5,-(HUB_W+40)/2,0.5,-(HUB_H+40)/2),Color3.fromRGB(80,0,180),9,20)
