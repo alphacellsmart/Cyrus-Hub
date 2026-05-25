@@ -863,12 +863,26 @@ local function makeConfig()
     local enBtn=mkBtn(langCard,UDim2.new(0,48,0,26),UDim2.new(1,-54,0.5,-13),(not _isBR) and Theme.accent or Theme.bg3,"🇺🇸 EN",13,7); enBtn.TextSize=10
     if _isBR then mkStroke(enBtn,Theme.accent,1) else mkStroke(ptBtn,Theme.accent,1) end
     ptBtn.MouseButton1Click:Connect(function()
-        _isBR=true; tw(ptBtn,0.2,{BackgroundColor3=Theme.accent}); tw(enBtn,0.2,{BackgroundColor3=Theme.bg3})
-        langDesc.Text="Idioma atual: Português 🇧🇷"; notify("🇧🇷 Idioma alterado para Português!"); task.wait(0.3); loadTab("Config")
+        _locale="pt"; _isBR=true
+        tw(ptBtn,0.2,{BackgroundColor3=Theme.accent}); tw(enBtn,0.2,{BackgroundColor3=Theme.bg3})
+        langDesc.Text="Idioma atual: Português"
+        notify("Idioma alterado para Português!")
+        task.wait(0.2)
+        -- Atualiza tabs
+        for _,child in ipairs(tabBar:GetChildren()) do if child:IsA("TextButton") then child:Destroy() end end
+        for _,ti in ipairs(TABS) do makeTab(ti) end
+        loadTab("Config")
     end)
     enBtn.MouseButton1Click:Connect(function()
-        _isBR=false; tw(enBtn,0.2,{BackgroundColor3=Theme.accent}); tw(ptBtn,0.2,{BackgroundColor3=Theme.bg3})
-        langDesc.Text="Current language: English 🇺🇸"; notify("🇺🇸 Language changed to English!"); task.wait(0.3); loadTab("Config")
+        _locale="en"; _isBR=false
+        tw(enBtn,0.2,{BackgroundColor3=Theme.accent}); tw(ptBtn,0.2,{BackgroundColor3=Theme.bg3})
+        langDesc.Text="Current language: English"
+        notify("Language changed to English!")
+        task.wait(0.2)
+        -- Atualiza tabs
+        for _,child in ipairs(tabBar:GetChildren()) do if child:IsA("TextButton") then child:Destroy() end end
+        for _,ti in ipairs(TABS) do makeTab(ti) end
+        loadTab("Config")
     end)
 
     mkSection(T("  KEYBIND","  KEYBIND"))
@@ -941,7 +955,6 @@ local function makeContato()
     local socials={
         {label="YouTube",   sub="@kalel-scripts", url="https://youtube.com/@kalel-scripts",      ic="▶",bg=Color3.fromRGB(200,0,0),   tc=Color3.fromRGB(255,100,100)},
         {label="Instagram", sub="@kalel_scripts", url="https://www.instagram.com/kalel_scripts", ic="◉",bg=Color3.fromRGB(180,0,120), tc=Color3.fromRGB(255,80,200)},
-        {label="Discord",   sub="Cyrus Hub",       url=INTERNAL_CONFIG.DiscordBR,                 ic="◈",bg=Color3.fromRGB(88,101,242),tc=Color3.fromRGB(140,150,255)},
     }
     for _,s in ipairs(socials) do
         local row=mkCard(56)
@@ -958,30 +971,83 @@ local function makeContato()
 end
 
 --// =========================================
+--//   ABA: NOVIDADES
+--// =========================================
+local function makeNovidades()
+    -- Busca scripts.json e mostra os últimos adicionados
+    local newsCard=mkCard(54,Color3.fromRGB(16,6,30)); mkStroke(newsCard,Theme.accent,1)
+    local nIc=mkFrame(newsCard,UDim2.new(0,36,0,36),UDim2.new(0,10,0.5,-18),Theme.accent,13,8); mkLabel(nIc,"★",16,true,Color3.fromRGB(255,255,255),nil,14)
+    local nT=Instance.new("TextLabel",newsCard); nT.Size=UDim2.new(1,-70,0,20); nT.Position=UDim2.new(0,54,0,8)
+    nT.BackgroundTransparency=1; nT.Text=T("CYRUS HUB — Novidades","CYRUS HUB — What's New"); nT.Font=Enum.Font.GothamBold; nT.TextSize=13; nT.TextColor3=Color3.fromRGB(255,255,255); nT.TextXAlignment=Enum.TextXAlignment.Left; nT.ZIndex=13
+    local nS=Instance.new("TextLabel",newsCard); nS.Size=UDim2.new(1,-70,0,13); nS.Position=UDim2.new(0,54,0,30)
+    nS.BackgroundTransparency=1; nS.Text=T("Scripts e atualizações recentes","Recent scripts and updates"); nS.Font=Enum.Font.Gotham; nS.TextSize=10; nS.TextColor3=Theme.textDim; nS.TextXAlignment=Enum.TextXAlignment.Left; nS.ZIndex=13
+
+    mkSection(T("  ULTIMOS SCRIPTS","  LATEST SCRIPTS"))
+
+    if #MY_SCRIPTS == 0 then
+        local emptyCard=mkCard(40)
+        local el=Instance.new("TextLabel",emptyCard); el.Size=UDim2.new(1,-16,1,0); el.Position=UDim2.new(0,10,0,0)
+        el.BackgroundTransparency=1; el.Text=T("Nenhum script disponivel ainda.","No scripts available yet."); el.Font=Enum.Font.Gotham; el.TextSize=11; el.TextColor3=Theme.textDim; el.TextXAlignment=Enum.TextXAlignment.Left; el.ZIndex=13
+    else
+        -- Mostra os últimos 5 scripts
+        local start = math.max(1, #MY_SCRIPTS-4)
+        for i=#MY_SCRIPTS,start,-1 do
+            local sc=MY_SCRIPTS[i]
+            local row=mkCard(52)
+            -- Badge "NOVO" nos últimos 2
+            if i>=#MY_SCRIPTS-1 then
+                local badge=mkFrame(row,UDim2.new(0,42,0,16),UDim2.new(1,-50,0,6),Theme.accent,14,4)
+                mkLabel(badge,"NOVO",8,true,Color3.fromRGB(255,255,255),nil,15)
+            end
+            local sT=Instance.new("TextLabel",row); sT.Size=UDim2.new(1,-120,0,20); sT.Position=UDim2.new(0,12,0,7)
+            sT.BackgroundTransparency=1; sT.Text=sc.name; sT.Font=Enum.Font.GothamBold; sT.TextSize=13; sT.TextColor3=Color3.fromRGB(255,255,255); sT.TextXAlignment=Enum.TextXAlignment.Left; sT.ZIndex=13
+            local sD=Instance.new("TextLabel",row); sD.Size=UDim2.new(1,-120,0,13); sD.Position=UDim2.new(0,12,0,30)
+            sD.BackgroundTransparency=1; sD.Text=sc.desc or ""; sD.Font=Enum.Font.Gotham; sD.TextSize=10; sD.TextColor3=Theme.textDim; sD.TextXAlignment=Enum.TextXAlignment.Left; sD.ZIndex=13
+            local runBtn=mkBtn(row,UDim2.new(0,64,0,28),UDim2.new(1,-72,0.5,-14),Theme.accent,T("Executar","Run"),13,8); runBtn.TextSize=11
+            runBtn.MouseEnter:Connect(function() tw(runBtn,0.15,{BackgroundColor3=Theme.accentLit}) end)
+            runBtn.MouseLeave:Connect(function() tw(runBtn,0.15,{BackgroundColor3=Theme.accent}) end)
+            runBtn.MouseButton1Click:Connect(function()
+                local ok,err=pcall(function() loadstring(game:HttpGet(sc.url))() end)
+                if ok then notify("✓ "..sc.name) else notify(T("Erro: ","Error: ")..tostring(err):sub(1,50)) end
+            end)
+            row.MouseEnter:Connect(function() tw(row,0.15,{BackgroundColor3=Theme.bg3}) end)
+            row.MouseLeave:Connect(function() tw(row,0.15,{BackgroundColor3=Theme.bg2}) end)
+        end
+    end
+
+    mkSection(T("  VERSAO","  VERSION"))
+    local verCard=mkCard(36)
+    local vL=Instance.new("TextLabel",verCard); vL.Size=UDim2.new(1,-16,1,0); vL.Position=UDim2.new(0,10,0,0)
+    vL.BackgroundTransparency=1; vL.Text="Cyrus Hub "..HUB_VER.."  ·  kalel-scripts  ·  2025"; vL.Font=Enum.Font.GothamMedium; vL.TextSize=10; vL.TextColor3=Theme.textDim; vL.TextXAlignment=Enum.TextXAlignment.Left; vL.ZIndex=13
+end
+
+--// =========================================
 --//   SISTEMA DE TABS
 --// =========================================
 local TABS={
-    {id="Dashboard", icon="", label=T("Inicio","Home","Главная","Inicio","Trang chu","หน้าหลัก")},
-    {id="Scripts",   icon="", label="Scripts"},
-    {id="Cyrus",     icon="", label="Cyrus"},
-    {id="Premium",   icon="", label="Premium"},
-    {id="Config",    icon="", label=T("Config","Config","Настройки","Config","Cai dat","ตั้งค่า")},
-    {id="Contato",   icon="", label=T("Contato","Contact","Контакты","Contacto","Lien he","ติดต่อ")},
+    {id="Dashboard",  icon="", label=T("Inicio","Home","Главная","Inicio","Trang chu","หน้าหลัก")},
+    {id="Novidades",  icon="", label=T("Novidades","News","Новости","Novedades","Tin tuc","ข่าวสาร")},
+    {id="Scripts",    icon="", label="Scripts"},
+    {id="Cyrus",      icon="", label="Cyrus"},
+    {id="Premium",    icon="", label="Premium"},
+    {id="Config",     icon="", label=T("Config","Config","Настройки","Config","Cai dat","ตั้งค่า")},
+    {id="Contato",    icon="", label=T("Contato","Contact","Контакты","Contacto","Lien he","ติดต่อ")},
 }
 
 local function loadTab(cat)
     clearContent(); currentCat=cat
-    if cat=="Dashboard" then makeDashboard()
-    elseif cat=="Scripts" then makeScripts()
-    elseif cat=="Cyrus"   then makeCyrus()
-    elseif cat=="Premium" then makePremium()
-    elseif cat=="Config"  then makeConfig()
-    elseif cat=="Contato" then makeContato() end
+    if cat=="Dashboard"  then makeDashboard()
+    elseif cat=="Novidades" then makeNovidades()
+    elseif cat=="Scripts"   then makeScripts()
+    elseif cat=="Cyrus"     then makeCyrus()
+    elseif cat=="Premium"   then makePremium()
+    elseif cat=="Config"    then makeConfig()
+    elseif cat=="Contato"   then makeContato() end
     task.wait(); content.CanvasSize=UDim2.new(0,0,0,cLayout.AbsoluteContentSize.Y+10)
 end
 
 local function makeTab(info)
-    local t=mkBtn(tabBar,UDim2.new(0,78,1,0),UDim2.new(0,0,0,0),Theme.bg3,info.icon.."  "..info.label,12,8)
+    local t=mkBtn(tabBar,UDim2.new(0,68,1,0),UDim2.new(0,0,0,0),Theme.bg3,info.icon.."  "..info.label,12,8)
     t.Font=Enum.Font.GothamMedium; t.TextSize=9; t.TextColor3=Theme.textDim; t.AutoButtonColor=false
     t.MouseButton1Click:Connect(function()
         if activeTab and activeTab~=t then tw(activeTab,0.15,{BackgroundColor3=Theme.bg3}); activeTab.TextColor3=Theme.textDim end
