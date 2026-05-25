@@ -442,7 +442,7 @@ loadPct.TextColor3=Theme.textDim; loadPct.ZIndex=108
 --// =========================================
 --//   HUB PRINCIPAL (invisível até animação terminar)
 --// =========================================
-local HUB_W,HUB_H=420,320
+local HUB_W,HUB_H=500,340
 local hub=mkFrame(sg,UDim2.new(0,HUB_W,0,HUB_H),UDim2.new(0.5,-HUB_W/2,0.5,-HUB_H/2),Theme.bg,10,14)
 hub.BackgroundTransparency=1; hub.Visible=false; mkStroke(hub,Theme.accent,1.5)
 local hubGlow=mkFrame(sg,UDim2.new(0,HUB_W+40,0,HUB_H+40),UDim2.new(0.5,-(HUB_W+40)/2,0.5,-(HUB_H+40)/2),Color3.fromRGB(80,0,180),9,20)
@@ -467,7 +467,7 @@ closeBtn.TextColor3=Theme.textDim; closeBtn.TextSize=14
 local tabBar=mkFrame(hub,UDim2.new(1,-12,0,30),UDim2.new(0,6,0,46),Theme.bg3,11,8)
 local tl=Instance.new("UIListLayout",tabBar)
 tl.FillDirection=Enum.FillDirection.Horizontal
-tl.Padding=UDim.new(0,0)
+tl.Padding=UDim.new(0,2)
 local sep=mkFrame(hub,UDim2.new(1,-12,0,1),UDim2.new(0,6,0,82),Theme.accent,11); sep.BackgroundTransparency=0.8
 
 -- Content
@@ -981,8 +981,8 @@ local function loadTab(cat)
 end
 
 local function makeTab(info)
-    local t=mkBtn(tabBar,UDim2.new(1,0,1,0),UDim2.new(0,0,0,0),Theme.bg3,info.icon.."  "..info.label,12,8)
-    t.Font=Enum.Font.GothamMedium; t.TextSize=10; t.TextColor3=Theme.textDim; t.AutoButtonColor=false
+    local t=mkBtn(tabBar,UDim2.new(0,78,1,0),UDim2.new(0,0,0,0),Theme.bg3,info.icon.."  "..info.label,12,8)
+    t.Font=Enum.Font.GothamMedium; t.TextSize=9; t.TextColor3=Theme.textDim; t.AutoButtonColor=false
     t.MouseButton1Click:Connect(function()
         if activeTab and activeTab~=t then tw(activeTab,0.15,{BackgroundColor3=Theme.bg3}); activeTab.TextColor3=Theme.textDim end
         activeTab=t; tw(t,0.15,{BackgroundColor3=Theme.accent}); t.TextColor3=Theme.text; loadTab(info.id)
