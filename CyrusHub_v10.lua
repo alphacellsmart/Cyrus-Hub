@@ -854,37 +854,6 @@ local function makeConfig()
         row.MouseLeave:Connect(function() tw(row,0.15,{BackgroundColor3=Theme.bg2}) end)
     end
 
-    mkSection(T("  IDIOMA","  LANGUAGE"))
-    local langCard=mkCard(44)
-    local langDesc=Instance.new("TextLabel",langCard); langDesc.Size=UDim2.new(1,-130,0,18); langDesc.Position=UDim2.new(0,10,0,6)
-    langDesc.BackgroundTransparency=1; langDesc.Text=_isBR and "Idioma atual: Português 🇧🇷" or "Current language: English 🇺🇸"
-    langDesc.Font=Enum.Font.GothamBold; langDesc.TextSize=11; langDesc.TextColor3=Color3.fromRGB(255,255,255); langDesc.TextXAlignment=Enum.TextXAlignment.Left; langDesc.ZIndex=13
-    local ptBtn=mkBtn(langCard,UDim2.new(0,48,0,26),UDim2.new(1,-106,0.5,-13),_isBR and Theme.accent or Theme.bg3,"🇧🇷 PT",13,7); ptBtn.TextSize=10
-    local enBtn=mkBtn(langCard,UDim2.new(0,48,0,26),UDim2.new(1,-54,0.5,-13),(not _isBR) and Theme.accent or Theme.bg3,"🇺🇸 EN",13,7); enBtn.TextSize=10
-    if _isBR then mkStroke(enBtn,Theme.accent,1) else mkStroke(ptBtn,Theme.accent,1) end
-    ptBtn.MouseButton1Click:Connect(function()
-        _locale="pt"; _isBR=true
-        tw(ptBtn,0.2,{BackgroundColor3=Theme.accent}); tw(enBtn,0.2,{BackgroundColor3=Theme.bg3})
-        langDesc.Text="Idioma atual: Português"
-        notify("Idioma alterado para Português!")
-        task.wait(0.2)
-        -- Atualiza tabs
-        for _,child in ipairs(tabBar:GetChildren()) do if child:IsA("TextButton") then child:Destroy() end end
-        for _,ti in ipairs(TABS) do makeTab(ti) end
-        loadTab("Config")
-    end)
-    enBtn.MouseButton1Click:Connect(function()
-        _locale="en"; _isBR=false
-        tw(enBtn,0.2,{BackgroundColor3=Theme.accent}); tw(ptBtn,0.2,{BackgroundColor3=Theme.bg3})
-        langDesc.Text="Current language: English"
-        notify("Language changed to English!")
-        task.wait(0.2)
-        -- Atualiza tabs
-        for _,child in ipairs(tabBar:GetChildren()) do if child:IsA("TextButton") then child:Destroy() end end
-        for _,ti in ipairs(TABS) do makeTab(ti) end
-        loadTab("Config")
-    end)
-
     mkSection(T("  KEYBIND","  KEYBIND"))
     local kbCard=mkCard(44); local currentKB=Enum.KeyCode.RightControl; local listeningKB=false
     local kbLbl=Instance.new("TextLabel",kbCard); kbLbl.Size=UDim2.new(1,-16,0,20); kbLbl.Position=UDim2.new(0,10,0,5)
