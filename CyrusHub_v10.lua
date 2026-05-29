@@ -827,13 +827,55 @@ local function makeDashboard()
     local gS=Instance.new("TextLabel",gameCard); gS.Size=UDim2.new(1,-70,0,13); gS.Position=UDim2.new(0,54,0,28)
     gS.BackgroundTransparency=1; gS.Text=gameKey.." · PlaceId: "..tostring(PLACE_ID); gS.Font=Enum.Font.Gotham; gS.TextSize=9; gS.TextColor3=Theme.textDim; gS.TextXAlignment=Enum.TextXAlignment.Left; gS.ZIndex=13
 
-    mkSection(T("  SCRIPTS RÁPIDOS","  QUICK SCRIPTS"))
-    for _,sc in ipairs(MY_SCRIPTS) do
-        mkActionRow(sc.name, sc.desc or "", T("▶ Executar","▶ Run"), function()
-            local ok,err=pcall(function() loadstring(game:HttpGet(sc.url))() end)
-            if ok then notify("⚡ "..sc.name.." "..T("executado!","executed!"))
-            else notify(T("✗ Erro: ","✗ Error: ")..tostring(err):sub(1,50)) end
-        end)
+    mkSection(T("  SCRIPTS COMPATÍVEIS","  COMPATIBLE SCRIPTS"))
+
+    -- Filtra scripts compatíveis com o jogo atual
+    local compatibleScripts = {}
+    for _, sc in ipairs(MY_SCRIPTS) do
+        local games = sc.games -- array de gameKeys, ex: {"JujutsuShenanigans","Universal"}
+        if games then
+            for _, g in ipairs(games) do
+                if g == gameKey or g == "Universal" then
+                    table.insert(compatibleScripts, sc)
+                    break
+                end
+            end
+        else
+            -- Se não tem campo games, assume Universal
+            table.insert(compatibleScripts, sc)
+        end
+    end
+
+    if #compatibleScripts == 0 then
+        local emptyCard = mkCard(52)
+        local el = Instance.new("TextLabel", emptyCard)
+        el.Size = UDim2.new(1,-16,1,0); el.Position = UDim2.new(0,10,0,0)
+        el.BackgroundTransparency = 1
+        el.Text = T("Nenhum script compatível com este jogo.","No scripts compatible with this game.")
+        el.Font = Enum.Font.Gotham; el.TextSize = 11
+        el.TextColor3 = Theme.textDim; el.TextXAlignment = Enum.TextXAlignment.Left; el.ZIndex = 13
+        local sub = Instance.new("TextLabel", emptyCard)
+        sub.Size = UDim2.new(1,-16,0,13); sub.Position = UDim2.new(0,10,0,26)
+        sub.BackgroundTransparency = 1
+        sub.Text = T("Veja todos na aba Scripts →","See all in Scripts tab →")
+        sub.Font = Enum.Font.Gotham; sub.TextSize = 10
+        sub.TextColor3 = Theme.accent; sub.TextXAlignment = Enum.TextXAlignment.Left; sub.ZIndex = 13
+    else
+        local gameTagCard = mkCard(26, Color3.fromRGB(14,6,28))
+        local gtL = Instance.new("TextLabel", gameTagCard)
+        gtL.Size = UDim2.new(1,-16,1,0); gtL.Position = UDim2.new(0,10,0,0)
+        gtL.BackgroundTransparency = 1
+        gtL.Text = "🎮 "..gameName.."  ·  "..#compatibleScripts..T(" script(s) encontrado(s)","script(s) found")
+        gtL.Font = Enum.Font.GothamMedium; gtL.TextSize = 10
+        gtL.TextColor3 = Theme.accentLit; gtL.TextXAlignment = Enum.TextXAlignment.Left; gtL.ZIndex = 13
+
+        for _, sc in ipairs(compatibleScripts) do
+            mkActionRow(sc.name, sc.desc or "", T("▶ Executar","▶ Run"), function()
+                local ok,err = pcall(function() loadstring(game:HttpGet(sc.url))() end)
+                if ok then notify("⚡ "..sc.name.." "..T("executado!","executed!"))
+                else notify(T("✗ Erro: ","✗ Error: ")..tostring(err):sub(1,50)) end
+            end)
+        end
     end
 end
 
