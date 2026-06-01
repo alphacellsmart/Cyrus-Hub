@@ -95,14 +95,25 @@ local function T(pt, en, ru, es, vi, th)
 end
 
 --// =========================================
---//   FETCH JSON
+--//   FETCH JSON (com timeout seguro)
 --// =========================================
 local function fetchJSON(url)
-    local ok, raw = pcall(function() return game:HttpGet(url, true) end)
-    if not ok or not raw or raw == "" then return nil end
-    local cleaned = raw:gsub("%-%-[^\n]*",""):gsub("%s+"," ")
-    local dok, data = pcall(function() return HttpSvc:JSONDecode(cleaned) end)
-    return dok and data or nil
+    local result = nil
+    local done = false
+    task.spawn(function()
+        local ok, raw = pcall(function() return game:HttpGet(url, true) end)
+        if ok and raw and raw ~= "" then
+            local cleaned = raw:gsub("%-%-[^\n]*",""):gsub("%s+"," ")
+            local dok, data = pcall(function() return HttpSvc:JSONDecode(cleaned) end)
+            if dok then result = data end
+        end
+        done = true
+    end)
+    local t = 0
+    while not done and t < 5 do
+        task.wait(0.1); t = t + 0.1
+    end
+    return result
 end
 
 --// =========================================
@@ -145,7 +156,7 @@ end
 -- Scripts locais fixos (fallback)
 if #MY_SCRIPTS == 0 then
     MY_SCRIPTS = {
-        {name="Redz Hub", desc="Script hub universal", url="https://raw.githubusercontent.com/huy384/redzHub/refs/heads/main/redzHub.lua"},
+        {name="Redz Hub", desc="Script hub universal", url="https://raw.githubusercontent.com/huy384/redzHub/refs/heads/main/redzHub.lua", games={"BloxFruits"}},
     }
 end
 
